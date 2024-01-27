@@ -45,13 +45,11 @@ web3 = Web3(Web3.HTTPProvider(bsc_testnet_node_url))
 # CONTRACT
 verify_contract = web3.eth.contract(address=contract_address, abi=contract_abi)
 
-async def verify_user_wallet(user_wallet: str, encrypted_username: str) -> bool:
+def verify_user_wallet(user_wallet: str, encrypted_username: str) -> bool:
     try:
         print("HERE")
-        print(encrypted_username)
-        result = await verify_contract.functions.userWallets(user_wallet).call()
-        print("RESULT")
-        print(result)
+        result = verify_contract.functions.userWallets(user_wallet).call()
+        print("result: ", result)
         return result == encrypted_username
     except:
         return False

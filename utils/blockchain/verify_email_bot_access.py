@@ -23,10 +23,10 @@ token_contract_abi = [
 # Create a contract object for the ERC-20 token
 token_contract = web3.eth.contract(address=token_contract_address, abi=token_contract_abi)
 
-async def get_token_balance(user_wallet: str) -> int:
+def get_token_balance(user_wallet: str) -> int:
     try:
         # Call the 'balanceOf' function to get the token balance for the user's address
-        result = await Web3.from_wei(token_contract.functions.balanceOf(user_wallet).call(), 'ether')
+        result = Web3.from_wei(token_contract.functions.balanceOf(user_wallet).call(), 'ether')
         return result
     except Exception as e:
         return 0
@@ -35,6 +35,6 @@ async def get_token_balance(user_wallet: str) -> int:
 
 access_amount = 2500 # 2,500 $MAIB tokens required to access email bot
 
-async def verify_access_for_email_bot(user_wallet: str) -> bool:
-    return await get_token_balance(user_wallet) >= access_amount
+def verify_access_for_email_bot(user_wallet: str) -> bool:
+    return get_token_balance(user_wallet) >= access_amount
     
