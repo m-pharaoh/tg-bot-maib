@@ -1,0 +1,1 @@
+web: gunicorn chat_api:app -k uvicorn.workers.UvicornWorker
