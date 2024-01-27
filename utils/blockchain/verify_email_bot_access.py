@@ -1,7 +1,7 @@
 from web3 import Web3
 
 # Replace these values with your actual contract details
-token_contract_address = "0xADd15b30E7B4f4408cdCc52999192901895c75A4"  # Example: Binance-Peg BUSD token address
+token_contract_address = "0xADd15b30E7B4f4408cdCc52999192901895c75A4"   # TESTNET
 bsc_testnet_node_url = "https://data-seed-prebsc-1-s1.binance.org:8545"
 
 # Connect to the BSC Testnet node

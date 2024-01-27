@@ -1,10 +1,10 @@
-from langchain.prompts import PromptTemplate
-from langchain.llms.ollama import Ollama
+# from langchain.prompts import PromptTemplate
+# from langchain.llms.ollama import Ollama
 
 
-llm = Ollama(
-    model="llama2:7b-chat", temperature=0.01, top_p=0.8
-)
+# llm = Ollama(
+#     model="llama2:7b-chat", temperature=0.01, top_p=0.8
+# )
 
 def email_action_agent(history: str):
     email_prompt_template = f"""<s>[INST] <<SYS>>
@@ -13,6 +13,6 @@ def email_action_agent(history: str):
 
                                     {history}"""
 
-    # prompt = PromptTemplate(template=ready_agent_prompt_template, input_variables=['history'])
-    # return llm(prompt.format(history=history)) 
-    return llm(email_prompt_template) 
+
+    # return llm(email_prompt_template) 
+    return "Subject hi there\n\n what's up"
