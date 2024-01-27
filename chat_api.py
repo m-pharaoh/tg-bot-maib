@@ -10,16 +10,13 @@ import constants
 # Initialize python telegram bot
 ptb = (
     Application.builder()
-    .updater(None)
     .token(constants.TOKEN) 
-    .read_timeout(7)
-    .get_updates_read_timeout(42)
     .build()
 )
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    await ptb.bot.setWebhook(url=constants.WEB_URL + "/process", secret_token=constants.SECRET_TOKEN) 
+    await ptb.bot.setWebhook(url=constants.WEB_URL) 
     async with ptb:
         await ptb.start()
         yield
@@ -28,7 +25,7 @@ async def lifespan(_: FastAPI):
 # Initialize FastAPI app (similar to Flask)
 app = FastAPI(lifespan=lifespan)
 
-@app.post("/process")
+@app.post("/")
 async def process_update(request: Request):
     req = await request.json()
     update = Update.de_json(req, ptb.bot)
