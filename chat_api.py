@@ -19,6 +19,7 @@ ptb = (
 async def lifespan(_: FastAPI):
     # await ptb.bot.setWebhook(url=constants.WEB_URL) 
     async with ptb:
+        await ptb.initialize()
         await ptb.start()
         yield
         await ptb.stop()
