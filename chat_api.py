@@ -131,7 +131,7 @@ async def verify_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     encrypted_username = context.user_data[user_id]["encrypted_username"]
 
     # verified_wallet = await verify_user_wallet(user_wallet, encrypted_username)
-    verified_wallet = verify_user_wallet(user_wallet, encrypted_username)
+    verified_wallet = await verify_user_wallet(user_wallet, encrypted_username)
 
 
     if verified_wallet:
