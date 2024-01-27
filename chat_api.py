@@ -19,7 +19,7 @@ ptb = (
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    await ptb.bot.setWebhook(constants.WEB_URL) 
+    await ptb.bot.setWebhook(constants.WEB_URL + "/process") 
     async with ptb:
         await ptb.start()
         yield
@@ -28,7 +28,7 @@ async def lifespan(_: FastAPI):
 # Initialize FastAPI app (similar to Flask)
 app = FastAPI(lifespan=lifespan)
 
-@app.post("/")
+@app.post("/process")
 async def process_update(request: Request):
     req = await request.json()
     update = Update.de_json(req, ptb.bot)
