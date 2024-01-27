@@ -47,6 +47,8 @@ verify_contract = web3.eth.contract(address=contract_address, abi=contract_abi)
 
 async def verify_user_wallet(user_wallet: str, encrypted_username: str) -> bool:
     try:
+        print("HERE")
+        print(encrypted_username)
         result = await verify_contract.functions.userWallets(user_wallet).call()
         return result == encrypted_username
     except:
