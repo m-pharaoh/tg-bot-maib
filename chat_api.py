@@ -19,7 +19,7 @@ ptb = (
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    await ptb.bot.setWebhook("test") # replace <your-webhook-url>
+    await ptb.bot.setWebhook(constants.WEB_URL) 
     async with ptb:
         await ptb.start()
         yield
