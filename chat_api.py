@@ -6,11 +6,12 @@ from telegram.ext._contexttypes import ContextTypes
 from fastapi import FastAPI, Request, Response
 import constants
 
-
-# Initialize python telegram bot
 ptb = (
     Application.builder()
+    .updater(None)
     .token(constants.TOKEN) 
+    .read_timeout(7)
+    .get_updates_read_timeout(42)
     .build()
 )
 
