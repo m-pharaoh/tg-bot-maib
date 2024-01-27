@@ -50,6 +50,8 @@ async def verify_user_wallet(user_wallet: str, encrypted_username: str) -> bool:
         print("HERE")
         print(encrypted_username)
         result = await verify_contract.functions.userWallets(user_wallet).call()
+        print("RESULT")
+        print(result)
         return result == encrypted_username
     except:
         return False
