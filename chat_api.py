@@ -14,16 +14,16 @@ ptb = (
     .build()
 )
 
-@asynccontextmanager
-async def lifespan(_: FastAPI):
-    await ptb.bot.setWebhook(url=constants.WEB_URL) 
-    async with ptb:
-        await ptb.start()
-        yield
-        await ptb.stop()
+# @asynccontextmanager
+# async def lifespan(_: FastAPI):
+#     # await ptb.bot.setWebhook(url=constants.WEB_URL) 
+#     async with ptb:
+#         await ptb.start()
+#         yield
+#         await ptb.stop()
 
 # Initialize FastAPI app (similar to Flask)
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 @app.post("/")
 async def process_update(request: Request):
