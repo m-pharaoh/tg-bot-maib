@@ -4,8 +4,13 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler
 from telegram.ext._contexttypes import ContextTypes
 from fastapi import FastAPI, Request, Response
+from cryptography.fernet import Fernet
+
 import constants
 
+
+# WEBHOOK SETUP
+#######################################################
 ptb = (
     Application.builder()
     .updater(None)
@@ -32,10 +37,27 @@ async def process_update(request: Request):
     update = Update.de_json(req, ptb.bot)
     await ptb.process_update(update)
     return Response(status_code=HTTPStatus.OK)
+#######################################################
 
-# Example handler
-async def start(update: Update, _: ContextTypes.DEFAULT_TYPE):
+# CONSTANTS
+#######################################################
+# secret_key = bytes.fromhex(constants.CIPHER_KEY) # cipher key is in hex format
+# cipher_suite = Fernet(secret_key)
+#######################################################
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
-    await update.message.reply_text("starting...")
+    user_id = update.message.from_user.id
+
+    # print(update.effective_chat.id)
+    if context.user_data.get(user_id):
+        await update.message.reply_html(
+        f"Already here"
+    )
+    else:
+        context.user_data[user_id] = {} # init a user
+        await update.message.reply_html(
+        f"Initialized"
+    )
 
 ptb.add_handler(CommandHandler("start", start))
