@@ -41,8 +41,8 @@ async def process_update(request: Request):
 
 # CONSTANTS
 #######################################################
-# secret_key = bytes.fromhex(constants.CIPHER_KEY) # cipher key is in hex format
-# cipher_suite = Fernet(secret_key)
+secret_key = bytes.fromhex(constants.CIPHER_KEY) # cipher key is in hex format
+cipher_suite = Fernet(secret_key)
 #######################################################
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
