@@ -227,7 +227,7 @@ async def bot_messenger(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     chat_history[-1].append(llm_reply) # append the bot reply
 
     # Delete 'Processing' message
-    await update.message.delete(chat_id=update.message.chat_id, message_id=processing_msg.message_id)
+    await ptb.bot.delete_message(chat_id=update.message.chat_id, message_id=processing_msg.message_id)
 
     # set new chat history
     if len(chat_history) == MAX_CHAT_HISTORY:
