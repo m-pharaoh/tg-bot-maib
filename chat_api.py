@@ -54,8 +54,9 @@ async def process_update(request: Request):
 # DB SETUP
 #######################################################
 CONNECTION_STRING = constants.MONGO_URI
-certs = certifi.where()
-connection_string = CONNECTION_STRING + f"&tls=true&tlsCAFile={certs}" 
+# certs = certifi.where()
+# + f"&tls=true&tlsCAFile={certs}" 
+connection_string = CONNECTION_STRING 
 
 # Create an async MongoDB client
 client = AsyncIOMotorClient(connection_string)
