@@ -55,11 +55,10 @@ async def process_update(request: Request):
 #######################################################
 CONNECTION_STRING = constants.MONGO_URI
 # certs = certifi.where()
-# + f"&tls=true&tlsCAFile={certs}" 
-connection_string = CONNECTION_STRING 
+# connection_string = CONNECTION_STRING + f"&tls=true&tlsCAFile={certs}" 
 
 # Create an async MongoDB client
-client = AsyncIOMotorClient(connection_string)
+client = AsyncIOMotorClient(CONNECTION_STRING)
 
 # Access your MongoDB Atlas database and collection
 db = client["MAI"]["user_data_mai"]
@@ -178,6 +177,10 @@ async def orchestrator(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
         await verify_wallet(update, _)
     elif flow == 1:
         await update.message.reply_text("To get started with configuring your bots, input one of the following commands:\n\n/start_email_bot")
+    elif flow == 10:
+        await gmail_client_secret(update, _)
+    elif flow == 11:
+        await gmail_client_tokens(update, _)
     elif flow == 12:
         await gmail_client_attempt_auth(update, _)
     elif flow == 13: 
