@@ -23,7 +23,8 @@ async def email_action_agent(history: str):
         "inputs": email_prompt_template,
         "parameters": {"temperature": 0.01, "top_p": 0.8, "max_new_tokens": 2000}
     })
-    
+
+    print(output)
     return output
     # async with ClientSession(connector=connector) as session:
         # output = await aiohttp.post(url=API_URL, headers=headers, json={
