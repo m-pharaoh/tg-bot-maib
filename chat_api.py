@@ -342,8 +342,8 @@ async def gmail_client_attempt_auth(update: Update, _: ContextTypes.DEFAULT_TYPE
 
     
     doc = await db.find_one({"_id": user_id})
-    client_id = doc[user_id]["email"]["client_id"]
-    client_secret = doc[user_id]["email"]["client_secret"]
+    client_id = doc["email"]["client_id"]
+    client_secret = doc["email"]["client_secret"]
 
 
     # attempt an auth
