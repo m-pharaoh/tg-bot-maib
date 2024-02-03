@@ -351,7 +351,7 @@ async def gmail_client_attempt_auth(update: Update, _: ContextTypes.DEFAULT_TYPE
 
     if auth:
         await db.find_one_and_update({"_id": user_id}, {"$set": {"email.access_token": access_token, "email.refresh_token": refresh_token, "bot_configured": True, "flow": 13}}) # done
-        await update.message.reply_text("SUCCESSFULLY LOGGED IN TO GMAIL!\n\nYou are now able to read/draft/send emails from your GMAIL with the power of AI!\n\nTry typing the following 😉\n\nDraft me an email about how awesome Bitcoin is🤑")
+        await update.message.reply_text("SUCCESSFULLY LOGGED IN TO GMAIL!\n\nYou are now able to read/draft/send emails from your GMAIL with the power of AI 🚀\n\nTry typing the following 😉\n\nDraft me an email about how awesome Bitcoin is🤑")
     else:
         await update.message.reply_text("Unable to authenticate to Gmail. Please ensure you provided the long piece of text given in your browser at the end of successfully authenticating!")
 

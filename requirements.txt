@@ -19,3 +19,4 @@ python-dotenv==1.0.0
 # new
 aiohttp==3.9.0
 motor==3.3.2
+huggingface-hub==0.19.4
