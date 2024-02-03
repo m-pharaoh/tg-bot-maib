@@ -151,7 +151,6 @@ async def verify_wallet(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
         await db.find_one_and_update({"_id": user_id}, {"$set": {"bot_configured": False, "wallet": user_wallet, "flow": 1}})
 
         await update.message.reply_text(f"SUCCESS! Welcome to your personalized META AI BOTS. To get started with configuring your bots, input one of the following commands:\n\n/start_email_bot")
-        return ConversationHandler.END
     else:
         # Prompt the user again for valid input
         await update.message.reply_text("Wallet address does not match with your unique access code. Please provide me with your wallet address which matches the access code, or re-verify:")
@@ -164,9 +163,24 @@ async def verify_wallet(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 
 # MESSENGER COMMANDS
 #######################################################
-async def orchestraor(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
+async def orchestrator(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """Orchestrate based on flow state"""
-    return
+    user_id = update.message.from_user.id
+    doc: dict = await db.find_one({"_id": user_id})
+
+    if not doc:
+        await update.message.reply_text("Welcome to Meta AI Bots 🤖. Please begin by running:\n\n/start")
+    
+    flow = doc["flow"]
+
+    if flow == 0:
+        await verify_wallet(update, _)
+    elif flow == 1:
+        await update.message.reply_text("To get started with configuring your bots, input one of the following commands:\n\n/start_email_bot")
+    elif flow == 12:
+        await gmail_client_attempt_auth(update, _)
+    elif flow == 13: 
+        await bot_messenger(update, _) # allowed to use the bot
 
 
 async def bot_messenger(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
@@ -450,5 +464,4 @@ ptb.add_handler(CommandHandler("draft_email", draft_gmail_email))
 ptb.add_handler(CommandHandler("read_email", read_gmail_email))
 
 # on non command i.e message 
-ptb.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, bot_messenger))
-# for this guy^ remember to use user_data context to know which bot is being used (email, twitter etc.)
+ptb.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, orchestrator))
