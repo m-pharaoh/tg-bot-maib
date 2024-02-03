@@ -2,6 +2,7 @@ import constants
 import ssl
 import certifi
 from huggingface_hub import AsyncInferenceClient
+import json
 # from aiohttp import ClientSession, TCPConnector
 
 HF_TOKEN = constants.HF_TOKEN
@@ -23,6 +24,8 @@ async def email_action_agent(history: str):
         "inputs": email_prompt_template,
         "parameters": {"temperature": 0.01, "top_p": 0.8, "max_new_tokens": 2000}
     })
+
+    output = json.loads(output)
 
     print(output)
     return output
