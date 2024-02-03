@@ -114,7 +114,7 @@ async def start(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
        wallet address -> encrypted_username
 
     4. Now, for wallet/token verification:
-        i) we read the wallet from the CONTEXT (which the user provides) 
+        i) we read the wallet from the DATABASE
         ii) we then get the encrypted_username from the smart contract
         iii) VERIFICATION HERE: we then check if the encrypted_username matches that of current user; if not, fail wallet verification.
         iv) if the encrypted (not decrypted, since we already have encrypted) username mathces that of the user, then use balanceOf with given wallet address to check balance of $MAIB tokens.
@@ -198,7 +198,7 @@ async def bot_messenger(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
         return
     
     # make sure user ALWAYS has enough tokens to access the bot
-    user_wallet = doc[user_id]["wallet"]
+    user_wallet = doc["wallet"]
     if not verify_access_for_email_bot(user_wallet):
         await update.message.reply_text("You do not have enough $MAIB tokens to access the email bot. You need at least 2,500 $MAIB tokens for access.")
         return
@@ -207,8 +207,8 @@ async def bot_messenger(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     user_reply = update.message.text
 
     chat_history = []
-    if doc[user_id].get("chat_history"): # chat history already set
-        chat_history = doc[user_id]["chat_history"]
+    if doc.get("chat_history"): # chat history already set
+        chat_history = doc["chat_history"]
 
     # [ [user_reply, bot_reply], [user_reply, bot_reply], ... ]
 
@@ -364,10 +364,10 @@ async def send_gmail_email(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None
 
     doc = await db.find_one({"_id": user_id})
 
-    client_id = doc[user_id]["email"]["client_id"]
-    client_secret = doc[user_id]["email"]["client_secret"]
-    access_token = doc[user_id]["email"]["access_token"]
-    refresh_token = doc[user_id]["email"]["refresh_token"]
+    client_id = doc["email"]["client_id"]
+    client_secret = doc["email"]["client_secret"]
+    access_token = doc["email"]["access_token"]
+    refresh_token = doc["email"]["refresh_token"]
 
 
     user_input = update.message.text.split(" ") # /send address1 address2 ....
@@ -376,7 +376,7 @@ async def send_gmail_email(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None
         await update.message.reply_text("use this format to send an email\n \\send_email email_address_to_send_to_1 email_address_to_send_to_2 ...")
         return 
     
-    llm_reply = doc[user_id]["llm_reply"].split('\n', 1) # returns [first_line_of string, rest_of_string]
+    llm_reply = doc["llm_reply"].split('\n', 1) # returns [first_line_of string, rest_of_string]
 
     # construct and send email
     service = create_authenticated_service(access_token, refresh_token, client_id, client_secret)
@@ -396,10 +396,10 @@ async def draft_gmail_email(update: Update, _: ContextTypes.DEFAULT_TYPE) -> Non
 
     doc = await db.find_one({"_id": user_id})
 
-    client_id = doc[user_id]["email"]["client_id"]
-    client_secret = doc[user_id]["email"]["client_secret"]
-    access_token = doc[user_id]["email"]["access_token"]
-    refresh_token = doc[user_id]["email"]["refresh_token"]
+    client_id = doc["email"]["client_id"]
+    client_secret = doc["email"]["client_secret"]
+    access_token = doc["email"]["access_token"]
+    refresh_token = doc["email"]["refresh_token"]
 
 
     user_input = update.message.text.split(" ") # /draft address1 address2 ....
@@ -408,7 +408,7 @@ async def draft_gmail_email(update: Update, _: ContextTypes.DEFAULT_TYPE) -> Non
         await update.message.reply_text("use this format to draft an email\n \\draft_email email_address_to_draft_to_1 email_address_to_draft_to_2 ...")
         return 
     
-    llm_reply = doc[user_id]["llm_reply"].split('\n', 1) # returns [first_line_of string, rest_of_string]
+    llm_reply = doc["llm_reply"].split('\n', 1) # returns [first_line_of string, rest_of_string]
 
     # construct and draft email
     service = create_authenticated_service(access_token, refresh_token, client_id, client_secret)
@@ -428,10 +428,10 @@ async def read_gmail_email(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None
 
     doc = await db.find_one({"_id": user_id})
 
-    client_id = doc[user_id]["email"]["client_id"]
-    client_secret = doc[user_id]["email"]["client_secret"]
-    access_token = doc[user_id]["email"]["access_token"]
-    refresh_token = doc[user_id]["email"]["refresh_token"]
+    client_id = doc["email"]["client_id"]
+    client_secret = doc["email"]["client_secret"]
+    access_token = doc["email"]["access_token"]
+    refresh_token = doc["email"]["refresh_token"]
 
 
     user_input = update.message.text.split(" ") # /read address1
