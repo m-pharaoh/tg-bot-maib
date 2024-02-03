@@ -204,7 +204,7 @@ async def bot_messenger(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 
     # llm getting ready to reply
     history = set_chat_history_for_llm(chat_history)
-    llm_reply = email_action_agent(history=history)
+    llm_reply = await email_action_agent(history=history)
 
     chat_history[-1].append(llm_reply) # append the bot reply
 
