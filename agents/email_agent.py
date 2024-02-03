@@ -25,10 +25,24 @@ async def email_action_agent(history: str):
         "parameters": {"temperature": 0.01, "top_p": 0.8, "max_new_tokens": 2000}
     })
 
-    output = json.loads(output)
+    # Convert bytes to string and decode
+    reply_str = output.decode('utf-8')
 
-    print(output)
-    return output
+    # Use json.loads to parse the JSON directly
+    parsed_data = json.loads(reply_str)
+
+    # Extract the generated_text from the parsed data
+    generated_text = parsed_data[0]['generated_text']
+
+    # Now, parse the inner JSON in generated_text
+    inner_data = json.loads(generated_text)
+
+    # Extract the email from the inner data
+    email = inner_data[0]['generated_text']
+
+    print(email)
+    
+    return email
     # async with ClientSession(connector=connector) as session:
         # output = await aiohttp.post(url=API_URL, headers=headers, json={
         #     "inputs": email_prompt_template,
