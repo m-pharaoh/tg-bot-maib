@@ -213,7 +213,7 @@ async def bot_messenger(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     processing_msg = await update.message.reply_text("Processing 🤖")
 
     # set new chat history
-    MAX_CHAT_HISTORY = 9 # max amount of human/bot messages
+    MAX_CHAT_HISTORY = 10 # max amount of human/bot messages
 
     chat_history.append([user_reply]) # may be the 10th msg
 
@@ -230,15 +230,23 @@ async def bot_messenger(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     # set new chat history
     if len(chat_history) == MAX_CHAT_HISTORY:
         update_operation = {
+            "$push": {
+                "chat_history": chat_history[-1]  # Add a new item to the end
+            },
             "$pop": {
                 "chat_history": -1  # Remove the first item
             },
-            # "$push": {
-            #     "chat_history": chat_history[-1]  # Add a new item to the end
-            # },
             "$set": {
                 "llm_reply": llm_reply
             }
+        }
+        await db.find_one_and_update({"_id": user_id}, update_operation)
+
+        # now, remove the first element
+        update_operation = {
+            "$pop": {
+                "chat_history": -1  # Remove the first item
+            },
         }
         await db.find_one_and_update({"_id": user_id}, update_operation)
     else:
