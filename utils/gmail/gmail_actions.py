@@ -80,7 +80,6 @@ def read_email_from_sender(service, sender_email: str):
 
         # Fetch the email details to get the 'payload'
         email_details = service.users().messages().get(userId='me', id=message_id).execute()
-        print(email_details)
 
         # Access the 'payload' directly from the response
         payload = email_details['payload']
@@ -109,45 +108,9 @@ def read_email_from_sender(service, sender_email: str):
     
 
         full_email =f"""
-                    Email Subject: {subject}
+        Email Subject: {subject}
 
-                    {decoded_body}
-                    """
+        {decoded_body}
+        """
 
         return full_email
-
-
-# def read_email_from_sender(service, sender_email: str):
-#     try:
-#         # Search for emails from the specific sender
-#         response = service.users().messages().list(userId='me', q=f"from:{sender_email}").execute()
-#         messages = response.get('messages', [])
-
-#         if not messages:
-#             print(f"No emails found from {sender_email}.")
-#         else:
-#             message_id = messages[0]['id']  # Get the first email ID from the sender
-
-#             # Retrieve the email details using the message ID
-#             email = service.users().messages().get(userId='me', id=message_id).execute()
-
-#             # fetch subject
-#             headers = email['payload']['headers']
-#             subject = next((header['value'] for header in headers if header['name'] == 'subject'), None)
-
-#             # fetch body
-#             email_body_encoded = email['payload']['body']['data']
-
-#             # Decode the Base64 encoded body and convert to readable text
-#             decoded_body_bytes = base64.urlsafe_b64decode(email_body_encoded)
-#             decoded_body = quopri.decodestring(decoded_body_bytes).decode('utf-8')
-
-#             full_email =f"""
-#                         Email Subject: {subject}
-
-#                         {decoded_body}
-#                         """
-
-#             return full_email
-#     except Exception as e:
-#         print(f"Failed to read email: {e}")
