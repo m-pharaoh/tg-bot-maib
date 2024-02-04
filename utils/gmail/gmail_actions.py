@@ -95,7 +95,7 @@ def read_email_from_sender(service, sender_email: str):
         # Extract email body from different parts
         decoded_body = ""
 
-        print(payload)
+        print(email_details)
         for part in payload.get('parts', []):
             if part['mimeType'] == 'text/plain':
                 email_body_encoded = part['body']['data']
