@@ -13,9 +13,9 @@ from utils.blockchain.verify_wallet import verify_user_wallet
 from utils.blockchain.verify_email_bot_access import verify_access_for_email_bot
 from utils.chat_history_for_llm import set_chat_history_for_llm
 from utils.gmail.gmail_actions import create_authenticated_service, send_email, draft_email, read_email_from_sender
+from utils.general import find_subject_and_content
 
 import constants
-import certifi
 
 # DB
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -54,8 +54,6 @@ async def process_update(request: Request):
 # DB SETUP
 #######################################################
 CONNECTION_STRING = constants.MONGO_URI
-# certs = certifi.where()
-# connection_string = CONNECTION_STRING + f"&tls=true&tlsCAFile={certs}" 
 
 # Create an async MongoDB client
 client = AsyncIOMotorClient(CONNECTION_STRING)
@@ -376,7 +374,7 @@ async def send_gmail_email(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None
         await update.message.reply_text("use this format to send an email\n \\send_email email_address_to_send_to_1 email_address_to_send_to_2 ...")
         return 
     
-    llm_reply = doc["llm_reply"].split('\n', 1) # returns [first_line_of string, rest_of_string]
+    llm_reply = find_subject_and_content(doc["llm_reply"]) # returns [first_line_of string, rest_of_string]
 
     # construct and send email
     service = create_authenticated_service(access_token, refresh_token, client_id, client_secret)
