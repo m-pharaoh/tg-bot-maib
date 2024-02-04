@@ -69,6 +69,8 @@ def read_email_from_sender(service, sender_email: str):
     response = service.users().messages().list(userId='me', q=f"from:{sender_email}").execute()
     messages = response.get('messages', [])
 
+    print(messages[0])
+
     if not messages:
         return f"No emails found from {sender_email}."
     else:
@@ -81,9 +83,6 @@ def read_email_from_sender(service, sender_email: str):
         # Fetch the email details to get the 'payload'
         email_details = service.users().messages().get(userId='me', id=message_id, format='metadata').execute()
 
-        print(email_details)
-
-        
         # Access the 'payload' directly from the response
         payload = email_details['payload']
 
