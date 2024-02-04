@@ -82,6 +82,7 @@ def read_email_from_sender(service, sender_email: str):
         subject = next((header['value'] for header in headers if header['name'] == 'subject'), None)
 
         # fetch body
+        print(email['payload']['body'])
         email_body_encoded = email['payload']['body']['data']
 
         # Decode the Base64 encoded body and convert to readable text
