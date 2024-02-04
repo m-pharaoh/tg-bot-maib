@@ -456,7 +456,7 @@ async def read_gmail_email(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None
     MAX_CHAT_HISTORY = 10
 
     # set new chat history
-    if len(chat_history) == MAX_CHAT_HISTORY:
+    if len(chat_history) == MAX_CHAT_HISTORY - 1:
         update_operation = {
             "$push": {
                 "chat_history": history  # Add a new item to the end
