@@ -82,6 +82,8 @@ def read_email_from_sender(service, sender_email: str):
         # Fetch the full details of the selected email message
         email_message = service.users().messages().get(userId='me', id=message_id).execute()
 
+        print(email_message)
+        
         # Retrieve the 'raw' email content from the 'payload'
         raw_email = email_message['payload']['raw']
 
