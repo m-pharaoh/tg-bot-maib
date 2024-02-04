@@ -411,7 +411,7 @@ async def draft_gmail_email(update: Update, _: ContextTypes.DEFAULT_TYPE) -> Non
         await update.message.reply_text("use this format to draft an email\n \\draft_email email_address_to_draft_to_1 email_address_to_draft_to_2 ...")
         return 
     
-    llm_reply = doc["llm_reply"].split('\n', 1) # returns [first_line_of string, rest_of_string]
+    llm_reply = find_subject_and_content(doc["llm_reply"]) # returns [first_line_of string, rest_of_string]
 
     # construct and draft email
     service = create_authenticated_service(access_token, refresh_token, client_id, client_secret)
@@ -435,6 +435,7 @@ async def read_gmail_email(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None
     client_secret = doc["email"]["client_secret"]
     access_token = doc["email"]["access_token"]
     refresh_token = doc["email"]["refresh_token"]
+    chat_history = doc["chat_history"]
 
 
     user_input = update.message.text.split(" ") # /read address1
@@ -449,7 +450,31 @@ async def read_gmail_email(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None
 
     read_email = read_email_from_sender(service, user_input[1])
 
-    await update.message.reply_text(read_email)
+    address = user_input[1]
+    history = [f"Please read the latest email from {address}", f"For sure! The latest email from {address} is:\n\n{read_email}"]
+
+    MAX_CHAT_HISTORY = 10
+
+    # set new chat history
+    if len(chat_history) == MAX_CHAT_HISTORY:
+        update_operation = {
+            "$push": {
+                "chat_history": history  # Add a new item to the end
+            }
+        }
+        await db.find_one_and_update({"_id": user_id}, update_operation)
+
+        # now, remove the first element
+        update_operation = {
+            "$pop": {
+                "chat_history": -1  # Remove the first item
+            },
+        }
+        await db.find_one_and_update({"_id": user_id}, update_operation)
+    else:
+        await db.find_one_and_update({"_id": user_id}, {"$push": {"chat_history": history}})
+
+    await update.message.reply_text(read_email) # only return the read email
 #######################################################
 
 
