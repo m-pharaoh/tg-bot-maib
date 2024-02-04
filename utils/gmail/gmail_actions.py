@@ -108,9 +108,9 @@ def read_email_from_sender(service, sender_email: str):
     
 
         full_email =f"""
-        Email Subject: {subject}
+    Email Subject: {subject}
 
-        {decoded_body}
-        """
+    {decoded_body}
+    """
 
         return full_email
