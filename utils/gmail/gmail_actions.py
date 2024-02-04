@@ -77,12 +77,13 @@ def read_email_from_sender(service, sender_email: str):
         # Retrieve the email details using the message ID
         email = service.users().messages().get(userId='me', id=message_id).execute()
 
+        print(email)
+        
         # fetch subject
         headers = email['payload']['headers']
         subject = next((header['value'] for header in headers if header['name'] == 'subject'), None)
 
         # fetch body
-        print(email['payload']['body'])
         email_body_encoded = email['payload']['body']['data']
 
         # Decode the Base64 encoded body and convert to readable text
