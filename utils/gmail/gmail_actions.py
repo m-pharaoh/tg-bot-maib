@@ -81,6 +81,9 @@ def read_email_from_sender(service, sender_email: str):
         # Fetch the email details to get the 'payload'
         email_details = service.users().messages().get(userId='me', id=message_id, format='metadata').execute()
 
+        print(email_details)
+
+        
         # Access the 'payload' directly from the response
         payload = email_details['payload']
 
@@ -95,7 +98,6 @@ def read_email_from_sender(service, sender_email: str):
         # Extract email body from different parts
         decoded_body = ""
 
-        print(email_details)
         for part in payload.get('parts', []):
             if part['mimeType'] == 'text/plain':
                 email_body_encoded = part['body']['data']
