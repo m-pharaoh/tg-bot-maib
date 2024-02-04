@@ -233,9 +233,9 @@ async def bot_messenger(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
             "$pop": {
                 "chat_history": -1  # Remove the first item
             },
-            "$push": {
-                "chat_history": chat_history[-1]  # Add a new item to the end
-            },
+            # "$push": {
+            #     "chat_history": chat_history[-1]  # Add a new item to the end
+            # },
             "$set": {
                 "llm_reply": llm_reply
             }
