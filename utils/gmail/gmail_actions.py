@@ -82,8 +82,11 @@ def read_email_from_sender(service, sender_email: str):
         # Fetch the full details of the selected email message
         email_message = service.users().messages().get(userId='me', id=message_id).execute()
 
-        # Convert Gmail API response to email.message.Message
-        msg = email.message_from_string(email_message['raw'])
+        # Retrieve the 'raw' email content from the 'payload'
+        raw_email = email_message['payload']['raw']
+
+        # Convert Gmail API 'raw' content to email.message.Message
+        msg = email.message_from_bytes(base64.urlsafe_b64decode(raw_email))
 
         # Extract subject
         subject = msg['Subject']
