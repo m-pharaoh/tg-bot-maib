@@ -80,6 +80,7 @@ def read_email_from_sender(service, sender_email: str):
 
         # Fetch the email details to get the 'payload'
         email_details = service.users().messages().get(userId='me', id=message_id).execute()
+        print(email_details)
 
         # Access the 'payload' directly from the response
         payload = email_details['payload']
