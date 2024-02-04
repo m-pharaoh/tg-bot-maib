@@ -106,11 +106,6 @@ def read_email_from_sender(service, sender_email: str):
         if decoded_body == "":
             decoded_body = "No email body available."
     
-        decoded_body.strip()
-        full_email =f"""
-                    Email Subject: {subject}
-
-                    {decoded_body}
-                    """
+        full_email =f"""Subject: {subject}\n{decoded_body}"""
 
         return full_email
