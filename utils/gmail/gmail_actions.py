@@ -95,9 +95,8 @@ def read_email_from_sender(service, sender_email: str):
         # Extract email body from different parts
         decoded_body = ""
 
+        print(payload)
         for part in payload.get('parts', []):
-            print("in HERE")
-            print(part)
             if part['mimeType'] == 'text/plain':
                 email_body_encoded = part['body']['data']
                 decoded_body_bytes = base64.urlsafe_b64decode(email_body_encoded)
