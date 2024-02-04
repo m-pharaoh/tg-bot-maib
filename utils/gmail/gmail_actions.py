@@ -2,6 +2,7 @@ from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from email.mime.text import MIMEText
+import email
 import base64
 import quopri
 
@@ -65,30 +66,41 @@ def draft_email(service, to: list, subject: str, body: str):
 
 
 def read_email_from_sender(service, sender_email: str):
-    # Search for emails from the specific sender
+    # Assuming 'service' is your Gmail API service and 'sender_email' is the desired sender
     response = service.users().messages().list(userId='me', q=f"from:{sender_email}").execute()
     messages = response.get('messages', [])
 
     if not messages:
         print(f"No emails found from {sender_email}.")
     else:
-        message_id = messages[0]['id']  # Get the first email ID from the sender
+        # Get the first message from the list
+        first_message = messages[0]
 
-        # Retrieve the email details using the message ID
-        email = service.users().messages().get(userId='me', id=message_id).execute()
+        # Assuming 'message_id' is obtained from the first message
+        message_id = first_message['id']
 
-        print(email)
-        
-        # fetch subject
-        headers = email['payload']['headers']
-        subject = next((header['value'] for header in headers if header['name'] == 'subject'), None)
+        # Fetch the full details of the selected email message
+        email_message = service.users().messages().get(userId='me', id=message_id).execute()
 
-        # fetch body
-        email_body_encoded = email['payload']['body']['data']
+        # Convert Gmail API response to email.message.Message
+        msg = email.message_from_string(email_message['raw'])
 
-        # Decode the Base64 encoded body and convert to readable text
-        decoded_body_bytes = base64.urlsafe_b64decode(email_body_encoded)
-        decoded_body = quopri.decodestring(decoded_body_bytes).decode('utf-8')
+        # Extract subject
+        subject = msg['Subject']
+
+        # Extract email body
+        decoded_body = None
+        for part in msg.walk():
+            if part.get_content_type() == 'text/plain':
+                email_body_encoded = part.get_payload()
+                decoded_body_bytes = base64.urlsafe_b64decode(email_body_encoded)
+                decoded_body = quopri.decodestring(decoded_body_bytes).decode('utf-8')
+                break  # Stop after finding the first text/plain part
+
+        # If no body is found, set a default message
+        if not decoded_body:
+            decoded_body = "No email body available."
+    
 
         full_email =f"""
                     Email Subject: {subject}
@@ -96,7 +108,7 @@ def read_email_from_sender(service, sender_email: str):
                     {decoded_body}
                     """
 
-        return full_email
+    return full_email
 
 
 # def read_email_from_sender(service, sender_email: str):
