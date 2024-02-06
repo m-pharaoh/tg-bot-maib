@@ -2,7 +2,6 @@ from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from email.mime.text import MIMEText
-import email
 import base64
 import quopri
 
@@ -43,31 +42,36 @@ def send_email(service, to: list, subject: str, body: str):
     # Send the encoded message using the Gmail API
     try:
         message = service.users().messages().send(userId='me', body=create_message).execute()
-        print(f"Email sent!")
+        return "Email sent successfully!"
     except Exception as e:
         print(f"Failed to send email: {e}")
+        return "Failed to send email"
 
 
 def draft_email(service, to: list, subject: str, body: str):
     # sender = service.users().getProfile(userId='me').execute()
     
-    # Create an email message
-    message = MIMEText(body)
-    message['to'] = ", ".join(to)
-    message['subject'] = subject
-    create_message = {'message': {'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()}}
-
-    # Send the encoded message using the Gmail API
     try:
+        # Create an email message
+        message = MIMEText(body)
+        message['to'] = ", ".join(to)
+        message['subject'] = subject
+        create_message = {'message': {'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()}}
+
+        # Send the encoded message using the Gmail API
         message = service.users().drafts().create(userId='me', body=create_message).execute()
-        print(f"Email drafted!")
+        return f"Email drafted successfully!"
     except Exception as e:
         print(f"Failed to draft email: {e}")
+        return "Failed to draft email"
 
 
 def read_email_from_sender(service, sender_email: str):
-    response = service.users().messages().list(userId='me', q=f"from:{sender_email}").execute()
-    messages = response.get('messages', [])
+    try:
+        response = service.users().messages().list(userId='me', q=f"from:{sender_email}").execute()
+        messages = response.get('messages', [])
+    except:
+        return f"No emails found from {sender_email}." 
 
     if not messages:
         return f"No emails found from {sender_email}."

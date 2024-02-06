@@ -3,7 +3,7 @@ def find_subject_and_content(input_string: str) -> list[str]:
 
     for i, line in enumerate(lines):
         if line.startswith('Subject:'):
-            subject_line = line
+            subject_line = line[len('Subject: '):]
             content = '\n'.join(lines[i + 1:])
             return subject_line, content
 
