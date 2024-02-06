@@ -85,7 +85,7 @@ async def start(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     if user:
         encrypted_username = user["encrypted_username"]
         if user["flow"] != 0:
-            await db.find_one_and_update({"_id": user_id}, {"flow": 0})
+            await db.find_one_and_update({"_id": user_id}, {"set": {"flow": 0}})
     else:
 
         # create encrypted username
