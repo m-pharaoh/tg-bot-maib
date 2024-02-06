@@ -46,7 +46,7 @@ app = FastAPI(lifespan=lifespan)
 async def process_update(request: Request):
     req = await request.json()
     update = Update.de_json(req, ptb.bot)
-    await ptb.process_update(update)
+    ptb.process_update(update)
     return Response(status_code=HTTPStatus.OK)
 #######################################################
 #######################################################
@@ -216,7 +216,7 @@ async def orchestrator(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def bot_messenger(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """LLM to reply back to user"""
-    time.sleep(60)
+    time.sleep(30)
     user_id = update.message.from_user.id
 
     doc: dict = await db.find_one({"_id": user_id})
