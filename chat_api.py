@@ -417,7 +417,7 @@ async def send_gmail_email(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None
     user_input = update.message.text.split(" ") # /send address1 address2 ....
 
     if len(user_input) < 2:
-        await update.message.reply_text("use this format to send an email\n \\send_email email_address_to_send_to_1 email_address_to_send_to_2 ...")
+        await update.message.reply_text("use this format to send an email\n/send_email email_address_to_send_to_1 email_address_to_send_to_2 ...")
         return 
     
     llm_reply = find_subject_and_content(doc["llm_reply"]) # returns [first_line_of string, rest_of_string]
@@ -456,7 +456,7 @@ async def draft_gmail_email(update: Update, _: ContextTypes.DEFAULT_TYPE) -> Non
     user_input = update.message.text.split(" ") # /draft address1 address2 ....
 
     if len(user_input) < 2:
-        await update.message.reply_text("use this format to draft an email\n \\draft_email email_address_to_draft_to_1 email_address_to_draft_to_2 ...")
+        await update.message.reply_text("use this format to draft an email\n/draft_email email_address_to_draft_to_1 email_address_to_draft_to_2 ...")
         return 
     
     llm_reply = find_subject_and_content(doc["llm_reply"]) # returns [first_line_of string, rest_of_string]
@@ -496,7 +496,7 @@ async def read_gmail_email(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None
     user_input = update.message.text.split(" ") # /read address1
 
     if len(user_input) != 2:
-        await update.message.reply_text("use this format to read an email\n \\read_email email_address_to_read_from")
+        await update.message.reply_text("use this format to read an email\n/read_email email_address_to_read_from")
         return 
     
 
@@ -541,28 +541,28 @@ async def read_gmail_email(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None
 async def help(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
     help_string = f"""
-    List of commands, and what they do 😉
+List of commands, and what they do 😉
 
-    Initialization Commands 🚀:
-    /start - initializes the process to verify your wallet with your unique access code
-    /start_email_bot - intitializes the process to link your GMAIL with the Meta AI Bot.
+Initialization Commands 🚀:
+/start - initializes the process to verify your wallet with your unique access code
+/start_email_bot - intitializes the process to link your GMAIL with the Meta AI Bot.
 
-    
-    Email AI Bot Commands ✉️:
-    /send_email - Sends the last reply by the AI Bot to the provided email addresses. You can view the 'last reply by the AI bot' by running /last_reply.
-    usage: /send_email email_address_1 email_address_2 ...
 
-    /draft_email - Drafts the last reply by the AI Bot to the provided email addresses. You can view the 'last reply by the AI bot' by running /last_reply.
-    usage: /draft_email email_address_1 email_address_2 ...
+Email AI Bot Commands ✉️:
+/send_email - Sends the last reply by the AI Bot to the provided email addresses. You can view the 'last reply by the AI bot' by running /last_reply.
+usage: /send_email email_address_1 email_address_2 ...
 
-    /read_email - Reads the latest email from the email address provided.
-    usage: /read_email email_address
+/draft_email - Drafts the last reply by the AI Bot to the provided email addresses. You can view the 'last reply by the AI bot' by running /last_reply.
+usage: /draft_email email_address_1 email_address_2 ...
 
-    
-    Extra Commands 👀:
-    /last_reply - The latest reply by the AI bot. This reply is what will be used to send/draft an email.
-    /help - You're already here :) 
-    """
+/read_email - Reads the latest email from the email address provided.
+usage: /read_email email_address
+
+
+Extra Commands 👀:
+/last_reply - The latest reply by the AI bot. This reply is what will be used to send/draft an email.
+/help - You're already here :) 
+"""
     await update.message.reply_text(help_string)
 
 async def last_reply(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
@@ -596,7 +596,7 @@ async def reset_chat_history(update: Update, _: ContextTypes.DEFAULT_TYPE) -> No
 ptb.add_handler(CommandHandler("start", start))
 ptb.add_handler(CommandHandler("help", help))
 ptb.add_handler(CommandHandler("last_reply", last_reply))
-ptb.add_handler(CommandHandler("last_reply", reset_chat_history))
+ptb.add_handler(CommandHandler("reset_chat_history", reset_chat_history))
 
 
 # email commands
@@ -605,5 +605,5 @@ ptb.add_handler(CommandHandler("send_email", send_gmail_email))
 ptb.add_handler(CommandHandler("draft_email", draft_gmail_email))
 ptb.add_handler(CommandHandler("read_email", read_gmail_email))
 
-# on non command i.e message 
+# on non-command i.e message 
 ptb.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, orchestrator))
