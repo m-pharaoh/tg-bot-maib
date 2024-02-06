@@ -36,7 +36,7 @@ def send_email(service, to: list, subject: str, body: str):
     # Create an email message
     message = MIMEText(body)
     message['to'] = ", ".join(to)
-    message['subject'] = subject
+    message['Subject'] = subject
     create_message = {'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()}
 
     # Send the encoded message using the Gmail API
@@ -55,7 +55,7 @@ def draft_email(service, to: list, subject: str, body: str):
         # Create an email message
         message = MIMEText(body)
         message['to'] = ", ".join(to)
-        message['subject'] = subject
+        message['Subject'] = subject
         create_message = {'message': {'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()}}
 
         # Send the encoded message using the Gmail API
@@ -85,8 +85,6 @@ def read_email_from_sender(service, sender_email: str):
         # Fetch the email details to get the 'payload'
         email_details = service.users().messages().get(userId='me', id=message_id).execute()
 
-        print(email_details)
-        
         # Access the 'payload' directly from the response
         payload = email_details['payload']
 
@@ -101,12 +99,18 @@ def read_email_from_sender(service, sender_email: str):
         # Extract email body from different parts
         decoded_body = ""
 
-        for part in payload.get('parts', []):
-            if part['mimeType'] == 'text/plain':
-                email_body_encoded = part['body']['data']
-                decoded_body_bytes = base64.urlsafe_b64decode(email_body_encoded)
-                decoded_body = quopri.decodestring(decoded_body_bytes).decode('utf-8')
-                break  # Stop after finding the first text/plain part
+        parts = payload.get('parts')
+        if parts:
+            for part in parts:
+                if part['mimeType'] == 'text/plain':
+                    email_body_encoded = part['body']['data']
+                    decoded_body_bytes = base64.urlsafe_b64decode(email_body_encoded)
+                    decoded_body = quopri.decodestring(decoded_body_bytes).decode('utf-8')
+                    break  # Stop after finding the first text/plain part
+        else:
+            email_body_encoded = payload['body']['data'] # check payload directly!
+            decoded_body_bytes = base64.urlsafe_b64decode(email_body_encoded)
+            decoded_body = quopri.decodestring(decoded_body_bytes).decode('utf-8')
 
         # If no body is found, set a default message
         if decoded_body == "":
