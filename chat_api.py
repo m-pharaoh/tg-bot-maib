@@ -490,7 +490,7 @@ async def read_gmail_email(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None
     client_secret = doc["email"]["client_secret"]
     access_token = doc["email"]["access_token"]
     refresh_token = doc["email"]["refresh_token"]
-    chat_history = doc["chat_history"]
+    chat_history = doc.get("chat_history", [])
 
 
     user_input = update.message.text.split(" ") # /read address1
