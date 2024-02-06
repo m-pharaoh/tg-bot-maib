@@ -222,8 +222,7 @@ async def bot_messenger(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     if doc.get("update_id"):
         if doc["update_id"] == update.update_id:
             return # IMPORTANT: do not re-process update
-    else:
-        await db.find_one_and_update({"_id": user_id}, {"$set": {"update_id": update.update_id}})
+    await db.find_one_and_update({"_id": user_id}, {"$set": {"update_id": update.update_id}})
 
     if not doc.get("bot_configured"): # checks whether user has configured a bot yet
         await update.message.reply_text("You have not configured any bots yet. Please configure a bot by running one of the following commands:\n\n/start_email_bot")
