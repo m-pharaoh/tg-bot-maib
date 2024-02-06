@@ -7,6 +7,7 @@ from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandl
 from telegram.ext._contexttypes import ContextTypes
 from fastapi import FastAPI, Request, Response
 from cryptography.fernet import Fernet
+import time
 
 from agents.email_agent import email_action_agent
 from utils.blockchain.verify_wallet import verify_user_wallet
@@ -68,6 +69,24 @@ secret_key = bytes.fromhex(constants.CIPHER_KEY) # cipher key is in hex format
 cipher_suite = Fernet(secret_key)
 #######################################################
 
+
+# # ASYNC TIMEOUT
+# # Set the global timeout value (in seconds)
+# GLOBAL_TIMEOUT = 60
+# #######################################################
+# def with_timeout(timeout):
+#     def decorator(func):
+#         async def wrapper(*args, **kwargs):
+#             try:
+#                 return await asyncio.wait_for(func(*args, **kwargs), timeout)
+#             except asyncio.TimeoutError:
+#                 # Handle timeout error as needed
+#                 print(f"Operation timed out after {timeout} seconds.")
+#                 raise
+
+#         return wrapper
+#     return decorator
+# #######################################################
 
 
 # START FLOW
@@ -172,6 +191,7 @@ async def verify_wallet(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 async def orchestrator(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """Orchestrate based on flow state"""
     user_id = update.message.from_user.id
+
     doc: dict = await db.find_one({"_id": user_id})
 
     if not doc:
@@ -196,9 +216,8 @@ async def orchestrator(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def bot_messenger(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """LLM to reply back to user"""
+    time.sleep(60)
     user_id = update.message.from_user.id
-    await update.message.reply_text("You have not configured any bots yet. Please configure a bot by running one of the following commands:\n\n/start_email_bot")
-    return
 
     doc: dict = await db.find_one({"_id": user_id})
 
@@ -551,12 +570,26 @@ async def last_reply(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     llm_reply = doc["llm_reply"]
     await update.message.reply_text(f"Latest AI Bot reply:\n\n{llm_reply}")
 
+async def reset_chat_history(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
+    user_id = update.message.from_user.id
+
+    doc: dict = await db.find_one({"_id": user_id})
+
+    if not doc.get("chat_history"): 
+        await update.message.reply_text("No chat history set yet.")
+        return
+    
+    # unset bot the chat history, and the latest llm reply
+    await db.find_one_and_update({"_id": user_id}, {"$unset": {"chat_history": "", "llm_reply": ""}})
+    await update.message.reply_text(f"chat history successfully reset")
+
 
 
 # general commands
 ptb.add_handler(CommandHandler("start", start))
 ptb.add_handler(CommandHandler("help", help))
 ptb.add_handler(CommandHandler("last_reply", last_reply))
+ptb.add_handler(CommandHandler("last_reply", reset_chat_history))
 
 
 # email commands
