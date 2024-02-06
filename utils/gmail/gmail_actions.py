@@ -99,6 +99,7 @@ def read_email_from_sender(service, sender_email: str):
         # Extract email body from different parts
         decoded_body = ""
 
+
         parts = payload.get('parts')
         if parts:
             for part in parts:

@@ -198,6 +198,9 @@ async def bot_messenger(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """LLM to reply back to user"""
     user_id = update.message.from_user.id
 
+    await update.message.reply_text("You have not configured any bots yet. Please configure a bot by running one of the following commands:\n\n/start_email_bot")
+
+
     doc: dict = await db.find_one({"_id": user_id})
 
     if not doc.get("bot_configured"): # checks whether user has configured a bot yet
