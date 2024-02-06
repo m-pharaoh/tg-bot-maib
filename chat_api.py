@@ -405,7 +405,7 @@ async def send_gmail_email(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None
     
 
     send = send_email(service, to, subject, body)
-    await update.message.reply_text("Email sent successfully")
+    await update.message.reply_text(send)
 
 
 # flow == 13, no more flow updates
