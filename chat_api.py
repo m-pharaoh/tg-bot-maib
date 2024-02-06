@@ -7,7 +7,6 @@ from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandl
 from telegram.ext._contexttypes import ContextTypes
 from fastapi import FastAPI, Request, Response
 from cryptography.fernet import Fernet
-import time
 
 from agents.email_agent import email_action_agent
 from utils.blockchain.verify_wallet import verify_user_wallet
@@ -220,6 +219,12 @@ async def bot_messenger(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 
     doc: dict = await db.find_one({"_id": user_id})
 
+    if doc.get("update_id"):
+        if doc["update_id"] == update.update_id:
+            return # IMPORTANT: do not re-process update
+    else:
+        await db.find_one_and_update({"_id": user_id}, {"$set": {"update_id": update.update_id}})
+
     if not doc.get("bot_configured"): # checks whether user has configured a bot yet
         await update.message.reply_text("You have not configured any bots yet. Please configure a bot by running one of the following commands:\n\n/start_email_bot")
         return
@@ -250,6 +255,10 @@ async def bot_messenger(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     # llm getting ready to reply
     history = set_chat_history_for_llm(chat_history)
     llm_reply = await email_action_agent(history=history)
+    if not llm_reply: # timeout
+        await ptb.bot.delete_message(chat_id=update.message.chat_id, message_id=processing_msg.message_id)
+        await update.message.reply_text("Failed to get response from AI bot in time. Please retry")
+
 
     chat_history[-1].append(llm_reply) # append the bot reply
 
