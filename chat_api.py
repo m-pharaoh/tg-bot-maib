@@ -41,7 +41,7 @@ async def lifespan(_: FastAPI):
 # Initialize FastAPI app (similar to Flask)
 app = FastAPI(lifespan=lifespan)
 
-@app.post("/")
+@app.post("/prod")
 async def process_update(request: Request):
     req = await request.json()
     update = Update.de_json(req, ptb.bot)
@@ -149,7 +149,7 @@ async def start(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     )
 
     await update.message.reply_text(
-        "Please go to the link below, you will be asked for your unique access code\n\nhttp://localhost:3000/verify"
+        "Please go to the link below, you will be asked for your unique access code\n\nhttps://meta-ai-bots.com/verify"
     )
 
     await update.message.reply_text(
@@ -231,7 +231,7 @@ async def bot_messenger(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     # make sure user ALWAYS has enough tokens to access the bot
     user_wallet = doc["wallet"]
     if not verify_access_for_email_bot(user_wallet):
-        await update.message.reply_text("You do not have enough MAIB tokens to access the email bot. You need at least 2,500 MAIB tokens for access.")
+        await update.message.reply_text("You do not have enough MAIB tokens to access the email bot. You need at least 75,000 MAIB tokens for access.")
         return
 
 
