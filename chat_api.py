@@ -311,10 +311,9 @@ async def init_email_bot(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 
     await db.find_one_and_update({"_id": user_id}, {"$set": {"flow": 10}})
 
-    await update.message.reply_text("Welcome to your personal Email AI Bot 🤖✉️.")
+    await update.message.reply_text("Welcome to your personal Email AI Bot 🤖✉️")
     await update.message.reply_text("ℹ️ The bot will NEVER ask for your email or password")
-    #TODO: change url below
-    await update.message.reply_text("ℹ️ Please go over this guide to get your CLIENT ID and CLIENT SECRET: https://docs.meta-ai-bots.com/ai-bots/email-ai-bot")
+    await update.message.reply_text("ℹ️ Please go over this guide to get your CLIENT ID and CLIENT SECRET: https://docs.meta-ai-bots.com/ai-bots/email-ai-bot/gmail-setup-guide")
     await update.message.reply_text("After you are done, please provide your CLIENT ID: ")
 
 # flow == 10
@@ -564,6 +563,7 @@ usage: /read_email email_address
 
 Extra Commands 👀:
 /last_reply - The latest reply by the AI bot. This reply is what will be used to send/draft an email.
+/reset_chat_history - Resets the chat history with AI bot. Useful if the AI gives undesired replies.
 /help - You're already here :) 
 """
     await update.message.reply_text(help_string)
