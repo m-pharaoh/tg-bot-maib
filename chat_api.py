@@ -311,8 +311,11 @@ async def init_email_bot(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 
     await db.find_one_and_update({"_id": user_id}, {"$set": {"flow": 10}})
 
-    await update.message.reply_text("Welcome to your personal Email AI Agent. Please provide your CLIENT ID: ")
-
+    await update.message.reply_text("Welcome to your personal Email AI Bot 🤖✉️.")
+    await update.message.reply_text("ℹ️ The bot will NEVER ask for your email or password")
+    #TODO: change url below
+    await update.message.reply_text("ℹ️ Please go over this guide to get your CLIENT ID and CLIENT SECRET: https://docs.meta-ai-bots.com/ai-bots/email-ai-bot")
+    await update.message.reply_text("After you are done, please provide your CLIENT ID: ")
 
 # flow == 10
 async def gmail_client_secret(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
