@@ -20,6 +20,13 @@ import constants
 # DB
 from motor.motor_asyncio import AsyncIOMotorClient
 
+# DB SETUP
+#######################################################
+CONNECTION_STRING = constants.MONGO_URI
+
+# Create an async MongoDB client
+client = AsyncIOMotorClient(CONNECTION_STRING)
+
 
 # WEBHOOK SETUP
 #######################################################
@@ -37,6 +44,7 @@ async def lifespan(_: FastAPI):
         await ptb.start()
         yield
         await ptb.stop()
+        client.close() # close DB connection
 
 # Initialize FastAPI app (similar to Flask)
 app = FastAPI(lifespan=lifespan)
@@ -49,14 +57,6 @@ async def process_update(request: Request):
     return Response(status_code=HTTPStatus.OK)
 #######################################################
 #######################################################
-
-
-# DB SETUP
-#######################################################
-CONNECTION_STRING = constants.MONGO_URI
-
-# Create an async MongoDB client
-client = AsyncIOMotorClient(CONNECTION_STRING)
 
 # Access your MongoDB Atlas database and collection
 db = client["MAI"]["user_data_mai"]
