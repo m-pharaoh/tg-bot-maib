@@ -231,7 +231,7 @@ async def bot_messenger(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     # make sure user ALWAYS has enough tokens to access the bot
     user_wallet = doc["wallet"]
     if not verify_access_for_email_bot(user_wallet):
-        await update.message.reply_text("You do not have enough MAIB tokens to access the email bot. You need at least 75,000 MAIB tokens for access.")
+        await update.message.reply_text("You do not have enough MAIB tokens to access the email bot. You need at least 150,000 MAIB tokens for access.")
         return
 
 

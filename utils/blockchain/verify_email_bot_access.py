@@ -36,7 +36,7 @@ def get_token_balance(user_wallet: str) -> int:
 
 
 
-access_amount = 75000 # 75,000 $MAIB tokens required to access email bot
+access_amount = 150000 # $MAIB tokens required to access email bot
 
 def verify_access_for_email_bot(user_wallet: str) -> bool:
     return get_token_balance(user_wallet) >= access_amount
